@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>منظومة احتساب الشهادة الثانوية | مدرسة الساحل للتعليم الخاص</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body translate="no" class="light">
+
+  <button id="themeToggle" class="theme-toggle" title="تبديل الوضع">🌓</button>
+
+  <section id="homeView" class="view active">
+    <div class="home-wrap">
+      <div class="photo-frame">
+        <img src="photo.jpg" alt="مدرسة الساحل" class="profile-photo">
+      </div>
+      <h1 class="site-title">مدرسة الساحل للتعليم الخاص<br>الشهادة الثانوية</h1>
+      <p class="site-subtitle">اختر القسم الدراسي لحساب نتيجتك بدقة وسهولة</p>
+
+      <div class="section-buttons">
+        <button class="section-btn btn-scientific" data-target="scientificView">
+          <span class="btn-icon">🧪</span>
+          <span>القسم العلمي</span>
+        </button>
+        <button class="section-btn btn-literary" data-target="literaryView">
+          <span class="btn-icon">📖</span>
+          <span>القسم الأدبي</span>
+        </button>
+      </div>
+      <br>
+      <a href="../index.html" style="color:#d4af37; text-decoration:none; font-weight:bold;">🏠 العودة للرئيسية</a>
+    </div>
+  </section>
+
+  <section id="scientificView" class="view">
+    <div class="page-wrap">
+      <header class="page-header">
+        <button class="back-btn" data-target="homeView">⟸ الأقسام</button>
+        <h2 class="page-title">القسم العلمي</h2>
+      </header>
+
+      <div class="card name-card">
+        <label for="studentName" class="name-label">اسم الطالب</label>
+        <input type="text" id="studentName" class="name-input" placeholder="اكتب اسمك هنا...">
+      </div>
+
+      <div id="subjectsContainer" class="subjects-container"></div>
+      <div id="summaryCard" class="card summary-card"></div>
+
+      <div class="actions-bar">
+        <button id="printBtn" class="action-btn primary-btn">🖨️ طباعة النتيجة</button>
+        <button id="clearBtn" class="action-btn danger-btn">🗑️ مسح البيانات</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="literaryView" class="view">
+    <div class="page-wrap">
+      <header class="page-header">
+        <button class="back-btn" data-target="homeView">⟸ الأقسام</button>
+        <h2 class="page-title">القسم الأدبي</h2>
+      </header>
+
+      <div class="card name-card">
+        <label for="litStudentName" class="name-label">اسم الطالب</label>
+        <input type="text" id="litStudentName" class="name-input" placeholder="اكتب اسمك هنا...">
+      </div>
+
+      <div id="litSubjectsContainer" class="subjects-container"></div>
+      <div id="litSummaryCard" class="card summary-card"></div>
+
+      <div class="actions-bar">
+        <button id="litPrintBtn" class="action-btn primary-btn lit-export-btn">🖨️ طباعة النتيجة</button>
+        <button id="litClearBtn" class="action-btn danger-btn">🗑️ مسح البيانات</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="printSheet" class="print-sheet"><div class="ps-border"><div class="ps-content">
+        <div class="ps-header">
+          <div class="ps-titles" style="text-align:center; width:100%;">
+            <h1>مدرسة الساحل للتعليم الخاص</h1>
+            <h2>بطاقة رصد الشهادة الثانوية</h2><h3 id="psSection">القسم العلمي</h3>
+          </div>
+        </div>
+        <div class="ps-student"><span class="ps-student-label">اسم الطالب:</span> <span id="psStudentName">—</span></div>
+        <table class="ps-table">
+          <thead><tr><th>المادة</th><th>الأعمال</th><th>الامتحان</th><th>المجموع</th><th>النسبة</th><th>التقدير</th><th>النتيجة</th></tr></thead>
+          <tbody id="psTableBody"></tbody>
+        </table>
+        <div class="ps-summary">
+          <div class="ps-summary-box"><span class="ps-sum-label">المجموع</span><span id="psTotal" class="ps-sum-value">0 / 1280</span></div>
+          <div class="ps-summary-box"><span class="ps-sum-label">النسبة</span><span id="psPercent" class="ps-sum-value">0%</span></div>
+          <div class="ps-summary-box"><span class="ps-sum-label">التقدير</span><span id="psGrade" class="ps-sum-value">—</span></div>
+          <div class="ps-summary-box ps-result-box"><span class="ps-sum-label">النتيجة النهائية</span><span id="psResult" class="ps-sum-value">—</span></div>
+        </div>
+        <p id="psRetakeNote" class="ps-retake-note"></p>
+        <div class="ps-footer">
+          <div class="ps-datetime"><span id="psDate"></span></div>
+          <div style="font-weight:bold; color:#0e1f4b;">أ. علي منصور العريبي<br>منسق الامتحانات</div>
+        </div>
+  </div></div></div>
+
+  <div id="litPrintSheet" class="print-sheet print-sheet-lit"><div class="ps-border ps-border-lit"><div class="ps-content ps-content-lit">
+        <div class="ps-header">
+          <div class="ps-titles" style="text-align:center; width:100%;">
+            <h1>مدرسة الساحل للتعليم الخاص</h1>
+            <h2>بطاقة رصد الشهادة الثانوية</h2><h3 class="lit-section-badge">القسم الأدبي</h3>
+          </div>
+        </div>
+        <div class="ps-student"><span class="ps-student-label">اسم الطالب:</span> <span id="litPsStudentName">—</span></div>
+        <table class="ps-table ps-table-lit">
+          <thead><tr><th>المادة</th><th>الأعمال</th><th>الامتحان</th><th>المجموع</th><th>النسبة</th><th>التقدير</th><th>النتيجة</th></tr></thead>
+          <tbody id="litPsTableBody"></tbody>
+        </table>
+        <div class="ps-summary">
+          <div class="ps-summary-box"><span class="ps-sum-label">المجموع</span><span id="litPsTotal" class="ps-sum-value">0 / 1240</span></div>
+          <div class="ps-summary-box"><span class="ps-sum-label">النسبة</span><span id="litPsPercent" class="ps-sum-value">0%</span></div>
+          <div class="ps-summary-box"><span class="ps-sum-label">التقدير</span><span id="litPsGrade" class="ps-sum-value">—</span></div>
+          <div class="ps-summary-box ps-result-box"><span class="ps-sum-label">النتيجة النهائية</span><span id="litPsResult" class="ps-sum-value">—</span></div>
+        </div>
+        <p id="litPsRetakeNote" class="ps-retake-note"></p>
+        <div class="ps-footer">
+          <div class="ps-datetime"><span id="litPsDate"></span></div>
+          <div style="font-weight:bold; color:#0e1f4b;">أ. علي منصور العريبي<br>منسق الامتحانات</div>
+        </div>
+  </div></div></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+  <script src="script_literary.js"></script>
+</body>
+</html>

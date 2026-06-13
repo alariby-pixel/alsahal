@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الشهادة الإعدادية | مدرسة الساحل للتعليم الخاص</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a5f7a;
+            --secondary-color: #c0a16b;
+            --danger-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --gold: #d4af37;
+            --text-color: #333;
+            --border-color: #ccc;
+            --input-bg: #fff;
+            --summary-bg: #f9f9f9;
+        }
+
+        body.dark-mode {
+            --primary-color: #3498db;
+            --secondary-color: #f1c40f;
+            --bg-color: #1a1a1a;
+            --card-bg: #2c3e50;
+            --text-color: #ecf0f1;
+            --border-color: #444;
+            --input-bg: #34495e;
+            --summary-bg: #34495e;
+        }
+        body.dark-mode .teacher-note,
+        body.dark-mode .issue-date,
+        body.dark-mode .signature-box p,
+        body.dark-mode .celebration-card p,
+        body.dark-mode .celebration-card .teacher-note {
+            color: var(--text-color) !important;
+        }
+        body.dark-mode #qrcode {
+            background: white;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        body.dark-mode .template-royal {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+            border: 8px solid var(--secondary-color) !important;
+        }
+        body.dark-mode .template-royal .congrats-text,
+        body.dark-mode .template-royal .rank-badge {
+            color: var(--secondary-color) !important;
+        }
+
+        .template-modern { --primary-color: #1a5f7a; --secondary-color: #c0a16b; }
+        .template-classic { --primary-color: #2c3e50; --secondary-color: #7f8c8d; border: 10px double #2c3e50 !important; }
+        .template-royal { --primary-color: #4a0e0e; --secondary-color: #d4af37; border: 8px solid #d4af37 !important; background: linear-gradient(135deg, #fff 0%, #fff9e6 100%) !important; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Cairo', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.3; padding: 5px; transition: background 0.3s, color 0.3s; }
+        .container { max-width: 850px; margin: 0 auto; background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        
+        .header { text-align: center; margin-bottom: 10px; position: relative; z-index: 1; }
+        .logo-container { width: 100px; height: 100px; margin: 0 auto 8px; border-radius: 50%; border: 3px solid var(--secondary-color); overflow: hidden; display: flex; justify-content: center; align-items: center; background: #fff; }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .header h1 { color: var(--primary-color); font-size: 20px; margin-bottom: 2px; }
+        .header h2 { color: var(--secondary-color); font-size: 14px; font-weight: 400; }
+        
+        .input-section { display: flex; gap: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+        .input-group { display: flex; flex-direction: column; gap: 3px; min-width: 150px; }
+        label { font-weight: bold; color: var(--primary-color); font-size: 12px; }
+        input[type="text"], select { padding: 6px; border: 1px solid var(--border-color); border-radius: 5px; font-family: 'Cairo', sans-serif; font-size: 12px; background: var(--input-bg); color: var(--text-color); }
+        
+        .student-display-name { text-align: center; font-size: 16px; font-weight: bold; color: var(--text-color); margin: 5px 0; padding: 4px; background: rgba(0,0,0,0.02); border: 1px dashed var(--secondary-color); border-radius: 5px; display: none; position: relative; z-index: 1; }
+        
+        .table-container { overflow-x: auto; margin-bottom: 10px; position: relative; z-index: 1; }
+        table { width: 100%; border-collapse: collapse; background: transparent; font-size: 12px; }
+        th, td { border: 1px solid var(--border-color); padding: 4px 2px; text-align: center; }
+        th { background-color: var(--primary-color); color: white; font-weight: bold; }
+        .period-title { text-align: center; font-size: 16px; font-weight: bold; color: var(--primary-color); margin: 5px 0; padding-bottom: 3px; border-bottom: 2px solid var(--secondary-color); position: relative; z-index: 1; }
+        input[type="number"] { width: 45px; padding: 3px; border: 1px solid var(--border-color); border-radius: 4px; text-align: center; font-size: 12px; background: var(--input-bg); color: var(--text-color); }
+        .low-grade { background-color: rgba(231, 76, 60, 0.1) !important; }
+        .needs-care { color: var(--danger-color); font-weight: bold; }
+        
+        .summary-section { margin-top: 8px; padding: 10px; background: var(--summary-bg); border-radius: 6px; border-right: 4px solid var(--primary-color); font-size: 13px; position: relative; z-index: 1; }
+        
+        .progress-container { width: 100%; background-color: #eee; border-radius: 10px; height: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--success-color)); width: 0%; transition: width 0.5s ease; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; position: relative; z-index: 1; }
+        .stat-card { padding: 8px; border-radius: 6px; background: rgba(0,0,0,0.02); border: 1px solid var(--border-color); font-size: 11px; }
+        .stat-card strong { color: var(--primary-color); }
+
+        .prediction-tool { margin-top: 10px; padding: 10px; background: rgba(39, 174, 96, 0.05); border-radius: 8px; border: 1px solid var(--success-color); font-size: 12px; position: relative; z-index: 1; }
+        .prediction-tool h4 { color: var(--success-color); margin-bottom: 5px; }
+
+        .celebration-card { text-align: center; padding: 20px; border: 4px double var(--gold); border-radius: 15px; background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,249,230,0.9) 100%); margin-top: 10px; display: none; position: relative; z-index: 1; }
+        .congrats-text { font-size: 22px; color: var(--primary-color); font-weight: bold; margin-bottom: 10px; }
+        .rank-badge { font-size: 30px; color: #b8860b; margin: 15px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .teacher-note { font-style: italic; color: #555; margin-top: 10px; font-size: 15px; border-top: 1px solid #eee; padding-top: 10px; }
+        
+        .footer-signature { margin-top: 15px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; position: relative; z-index: 1; }
+        .signature-box { text-align: center; }
+        .stamp { width: 80px; height: 80px; border: 3px double var(--danger-color); border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--danger-color); font-weight: bold; transform: rotate(-10deg); opacity: 0.8; font-size: 10px; line-height: 1.1; }
+        
+        .qr-container { text-align: center; margin-top: 5px; }
+        #qrcode { display: inline-block; padding: 5px; background: white; border: 1px solid #eee; }
+        .issue-date { font-size: 10px; color: #777; margin-top: 5px; }
+
+        .actions { display: flex; gap: 8px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .btn { padding: 8px 15px; color: white; border: none; border-radius: 5px; font-family: 'Cairo', sans-serif; font-weight: bold; cursor: pointer; font-size: 12px; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-print { background-color: #34495e; }
+        .btn-clear { background-color: #e67e22; }
+        .btn-dark { background-color: #2c3e50; }
+
+        .grade-excellent { color: #d4af37 !important; font-weight: bold; }
+        .grade-very-good { color: #aaa9ad !important; font-weight: bold; }
+        .grade-good { color: #cd7f32 !important; font-weight: bold; }
+        .grade-pass { color: var(--success-color) !important; font-weight: bold; }
+        .grade-fail { color: var(--danger-color) !important; font-weight: bold; }
+        
+        @media print {
+            @page { size: A4; margin: 5mm; }
+            body { background: white !important; color: black !important; padding: 0; }
+            .container { box-shadow: none; width: 100%; max-width: none; border: 1px solid #eee; background: white !important; }
+            .actions, .input-section, .btn-dark, .prediction-tool { display: none !important; }
+            .student-display-name { display: block !important; }
+            .stat-card { background: white !important; border: 1px solid #ccc !important; }
+            .summary-section { background: #f9f9f9 !important; border-right: 4px solid #1a5f7a !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="main-card">
+    <div class="header">
+        <div class
+        </div>
+        <h1>مدرسة الساحل للتعليم الخاص</h1>
+        <h2>نظام حساب النسبة النهائية - الشهادة الإعدادية</h2>
+    </div>
+    <div class="input-section">
+        <div class="input-group">
+            <label>اسم الطالب الرباعي:</label>
+            <input type="text" id="student-name" placeholder="أدخل اسم الطالب..." oninput="updateStudentName(); syncAndSave();">
+        </div>
+        <div class="input-group">
+            <label>نوع البطاقة:</label>
+            <select id="period-select" onchange="renderTable(); syncAndSave();">
+                <option value="p1">الفترة الأولى</option>
+                <option value="p2">الفترة الثانية</option>
+                <option value="p12">مجموع الفترتين</option>
+                <option value="final">النتيجة النهائية</option>
+                <option value="questions">بناءً على الأسئلة</option>
+                <option value="top_students">الأوائل 🇱🇾</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>قالب الشهادة:</label>
+            <select id="template-select" onchange="applyTemplate(); syncAndSave();">
+                <option value="template-modern">حديث (Modern)</option>
+                <option value="template-classic">كلاسيكي (Classic)</option>
+                <option value="template-royal">ملكي (Royal)</option>
+            </select>
+        </div>
+    </div>
+    <div id="student-name-badge" class="student-display-name">اسم الطالب: <span id="display-name-text"></span></div>
+    <div id="content-area">
+        <div class="period-title" id="display-title">بطاقة تقدير الفترة الأولى</div>
+        <div id="table-wrapper" class="table-container"></div>
+        <div id="celebration-wrapper" class="celebration-card"></div>
+        
+        <div id="visual-stats">
+            <div class="progress-container"><div id="main-progress" class="progress-bar"></div></div>
+            <div id="summary-wrapper" class="summary-section"></div>
+            <div id="stats-wrapper" class="stats-grid"></div>
+            <div id="prediction-wrapper" class="prediction-tool"></div>
+        </div>
+    </div>
+    <div class="footer-signature">
+        <div class="signature-box">
+            <p style="font-size: 11px;"></p>
+            <p style="font-weight: bold; font-size: 13px;">مدرسة الساحل للتعليم الخاص</p>
+            <div class="issue-date" id="current-date"> --</div>
+        </div>
+       
+        
+    </div>
+</div>
+<div class="actions">
+    <a href="../index.html" style="display:inline-flex; align-items:center; gap:5px; background:var(--primary-color); color:white; padding:8px 16px; border-radius:5px; text-decoration:none; font-size:12px; font-weight:bold;"><span>🏠</span> الرئيسية</a>
+    <button class="btn btn-dark" id="dark-mode-btn" onclick="toggleDarkMode()">الوضع الليلي</button>
+    <button class="btn btn-print" onclick="window.print()">طباعة البطاقة النهائية</button>
+    <button class="btn btn-clear" onclick="clearAllData()">مسح كافة البيانات</button>
+</div>
+
+<script>
+    // ===================== الكود الكامل للإعدادي =====================
+
+    const subjects = [
+        { id: "islamic", name: "التربية الإسلامية", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "arabic", name: "اللغة العربية", pMax: 24, pWork: 12, pExam: 12, fExam: 112, qCount: 112, qWeight: 1 },
+        { id: "writing", name: "الكتابة", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "english", name: "اللغة الإنجليزية", pMax: 24, pWork: 12, pExam: 12, fExam: 112, qCount: 56, qWeight: 2 },
+        { id: "computer", name: "الحاسوب", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "math", name: "الرياضيات", pMax: 30, pWork: 15, pExam: 15, fExam: 140, qCount: 56, qWeight: 2.5 },
+        { id: "science", name: "العلوم", pMax: 30, pWork: 15, pExam: 15, fExam: 140, qCount: 56, qWeight: 2.5 },
+        { id: "history", name: "التاريخ", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "geography", name: "الجغرافيا", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 }
+    ];
+
+    const questionSubjects = [
+        { id: "islamic", name: "التربية الإسلامية", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "nahw", name: "النحو", pMax: 10, pWork: 5, pExam: 5, fExam: 46, qCount: 46, qWeight: 1, isCombined: true },
+        { id: "reading", name: "القراءة والنصوص", pMax: 14, pWork: 7, pExam: 7, fExam: 66, qCount: 66, qWeight: 1, isCombined: true },
+        { id: "writing", name: "الكتابة", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "english", name: "اللغة الإنجليزية", pMax: 24, pWork: 12, pExam: 12, fExam: 112, qCount: 56, qWeight: 2 },
+        { id: "computer", name: "الحاسوب", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "math", name: "الرياضيات", pMax: 30, pWork: 15, pExam: 15, fExam: 140, qCount: 56, qWeight: 2.5 },
+        { id: "science", name: "العلوم", pMax: 30, pWork: 15, pExam: 15, fExam: 140, qCount: 56, qWeight: 2.5 },
+        { id: "history", name: "التاريخ", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 },
+        { id: "geography", name: "الجغرافيا", pMax: 12, pWork: 6, pExam: 6, fExam: 56, qCount: 56, qWeight: 1 }
+    ];
+
+    let masterData = {
+        studentName: "", periodType: "p1", template: "template-modern",
+        p1: {}, p2: {}, final: {}, darkMode: false
+    };
+
+    function applyTemplate() {
+        const container = document.getElementById('main-card');
+        const template = document.getElementById('template-select').value;
+        container.className = 'container ' + template;
+        masterData.template = template;
+    }
+
+    function toggleDarkMode() {
+        masterData.darkMode = !masterData.darkMode;
+        applyDarkMode();
+        syncAndSave();
+    }
+
+    function applyDarkMode() {
+        if (masterData.darkMode) {
+            document.body.classList.add('dark-mode');
+            document.getElementById('dark-mode-btn').innerText = "الوضع المضيء";
+        } else {
+            document.body.classList.remove('dark-mode');
+            document.getElementById('dark-mode-btn').innerText = "الوضع الليلي";
+        }
+    }
+
+    function updateStudentName() {
+        masterData.studentName = document.getElementById('student-name').value;
+        const badge = document.getElementById('student-name-badge');
+        const text = document.getElementById('display-name-text');
+        badge.style.display = masterData.studentName.trim() !== "" ? "block" : "none";
+        text.innerText = masterData.studentName;
+        updateQRCode();
+    }
+
+    function handleInput(input, max, subjectId, field, period) {
+        let val = parseFloat(input.value);
+        if (isNaN(val)) val = 0;
+        
+        val = Math.ceil(val);
+        if (val > max) { alert(`القيمة لا يمكن أن تتجاوز ${max}`); val = max; }
+        if (input.value !== "") input.value = val;
+        
+        if (period === 'p1') {
+            if (!masterData.p1[subjectId]) masterData.p1[subjectId] = {work:0, exam:0};
+            masterData.p1[subjectId][field] = val;
+        } else if (period === 'p2') {
+            if (!masterData.p2[subjectId]) masterData.p2[subjectId] = {work:0, exam:0};
+            masterData.p2[subjectId][field] = val;
+        } else if (period === 'final') {
+            if (!masterData.final[subjectId]) masterData.final[subjectId] = {examScore:0, p12sum:0, qScore:0};
+            const s = [...subjects, ...questionSubjects].find(x => x.id === subjectId);
+            if (field === 'examScore') {
+                masterData.final[subjectId].examScore = val;
+                masterData.final[subjectId].qScore = s.qWeight > 0 ? Math.ceil(val / s.qWeight) : 0;
+            } else if (field === 'qScore') {
+                masterData.final[subjectId].qScore = val;
+                masterData.final[subjectId].examScore = Math.ceil(val * s.qWeight);
+            } else {
+                masterData.final[subjectId][field] = val;
+            }
+        }
+        syncAndSave();
+        renderTable();
+    }
+
+    function syncAndSave() {
+        masterData.periodType = document.getElementById('period-select').value;
+        localStorage.setItem('student_master_data', JSON.stringify(masterData));
+        calculate();
+        updateQRCode();
+    }
+
+    function getGrade(percent) {
+        if (percent >= 85) return "ممتاز";
+        if (percent >= 75) return "جيد جداً";
+        if (percent >= 65) return "جيد";
+        if (percent >= 50) return "مقبول";
+        return "راسب";
+    }
+
+    function getGradeClass(percent) {
+        if (percent >= 85) return "grade-excellent";
+        if (percent >= 75) return "grade-very-good";
+        if (percent >= 65) return "grade-good";
+        if (percent >= 50) return "grade-pass";
+        return "grade-fail";
+    }
+
+    function updateQRCode() {
+        const qrContainer = document.getElementById("qrcode");
+        if (!qrContainer) return;
+        
+        let canvas = qrContainer.querySelector('canvas');
+        if (!canvas) {
+            qrContainer.innerHTML = '<canvas id="qr-canvas"></canvas>';
+            canvas = document.getElementById('qr-canvas');
+        }
+        
+        const dataStr = `الطالب: ${masterData.studentName || 'غير متوفر'}\nالمجموع: ${window.lastTotal || 0}\nمدرسة الساحل للتعليم الخاص`;
+        
+        try {
+            if (typeof QRious !== 'undefined') {
+                new QRious({
+                    element: canvas,
+                    value: dataStr,
+                    size: 80,
+                    level: 'H',
+                    foreground: '#000000',
+                    background: '#ffffff'
+                });
+            } else {
+                qrContainer.innerHTML = "<small>جاري تحميل الرمز...</small>";
+            }
+        } catch (e) {
+            console.error("QR Error:", e);
+        }
+        
+        updateIssueDate();
+    }
+
+    function updateIssueDate() {
+        const dateElem = document.getElementById('current-date');
+        if (dateElem) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('ar-LY', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('ar-LY', { hour: '2-digit', minute: '2-digit' });
+            dateElem.innerText = `تاريخ الإصدار: ${dateStr} - ${timeStr}`;
+        }
+    }
+
+    function renderTable() {
+        const type = document.getElementById('period-select').value;
+        const wrapper = document.getElementById('table-wrapper');
+        const celeb = document.getElementById('celebration-wrapper');
+        const title = document.getElementById('display-title');
+        const visualStats = document.getElementById('visual-stats');
+        
+        celeb.style.display = "none";
+        wrapper.style.display = "block";
+        visualStats.style.display = "block";
+        
+        let html = `<table>`;
+        const currentSubjects = (type === 'questions' || type === 'top_students') ? questionSubjects : subjects;
+        
+        if (type === 'p1' || type === 'p2') {
+            title.innerText = type === 'p1' ? "بطاقة تقدير الفترة الأولى" : "بطاقة تقدير الفترة الثانية";
+            html += `<thead><tr><th>المادة</th><th>الأعمال</th><th>الامتحان</th><th>المجموع</th><th>النسبة</th><th>الملاحظات</th></tr></thead><tbody>`;
+            currentSubjects.forEach((s, i) => {
+                const period = type;
+                const val = (period === 'p1' ? masterData.p1[s.id] : masterData.p2[s.id]) || {work:0, exam:0};
+                html += `<tr><td>${s.name}</td>
+                    <td><input type="number" id="work-${i}" value="${val.work||''}" onchange="handleInput(this, ${s.pWork}, '${s.id}', 'work', '${period}')"> / ${s.pWork}</td>
+                    <td><input type="number" id="exam-${i}" value="${val.exam||''}" onchange="handleInput(this, ${s.pExam}, '${s.id}', 'exam', '${period}')"> / ${s.pExam}</td>
+                    <td id="total-${i}">0</td><td id="percent-${i}">0%</td><td id="note-${i}">-</td></tr>`;
+            });
+        } else if (type === 'p12') {
+            title.innerText = "بطاقة تقدير مجموع الفترتين";
+            html += `<thead><tr><th rowspan="2">المادة</th><th colspan="2">الفترة الأولى</th><th colspan="2">الفترة الثانية</th><th rowspan="2">المجموع</th><th rowspan="2">التقدير</th></tr><tr><th>أعمال</th><th>امتحان</th><th>أعمال</th><th>امتحان</th></tr></thead><tbody>`;
+            currentSubjects.forEach((s, i) => {
+                const v1 = masterData.p1[s.id] || {work:0, exam:0};
+                const v2 = masterData.p2[s.id] || {work:0, exam:0};
+                html += `<tr><td>${s.name}</td>
+                    <td><input type="number" id="p1w-${i}" value="${v1.work||''}" onchange="handleInput(this, ${s.pWork}, '${s.id}', 'work', 'p1')"></td>
+                    <td><input type="number" id="p1e-${i}" value="${v1.exam||''}" onchange="handleInput(this, ${s.pExam}, '${s.id}', 'exam', 'p1')"></td>
+                    <td><input type="number" id="p2w-${i}" value="${v2.work||''}" onchange="handleInput(this, ${s.pWork}, '${s.id}', 'work', 'p2')"></td>
+                    <td><input type="number" id="p2e-${i}" value="${v2.exam||''}" onchange="handleInput(this, ${s.pExam}, '${s.id}', 'exam', 'p2')"></td>
+                    <td id="total12-${i}">0</td><td id="grade12-${i}">-</td></tr>`;
+            });
+        } else if (type === 'final' || type === 'questions') {
+            title.innerText = type === 'final' ? "بطاقة النتيجة النهائية" : "النتيجة النهائية (بناءً على عدد الأسئلة)";
+            const isQMode = type === 'questions';
+            const examHeader = isQMode ? "عدد الأسئلة الصحيحة" : "الامتحان النهائي";
+            html += `<thead><tr><th>المادة</th><th>مجموع الفترتين</th><th>${examHeader}</th><th>الدرجة المستحقة</th><th>المجموع الكلي</th><th>التقدير</th><th>الملاحظات</th></tr></thead><tbody>`;
+            currentSubjects.forEach((s, i) => {
+                const v1 = masterData.p1[s.id] || {work:0, exam:0};
+                const v2 = masterData.p2[s.id] || {work:0, exam:0};
+                const autoP12 = (v1.work + v1.exam + v2.work + v2.exam);
+                const fVal = masterData.final[s.id] || {examScore:0, p12sum: autoP12, qScore: 0};
+                const currentP12 = (fVal.p12sum !== undefined && fVal.p12sum !== null && fVal.p12sum !== 0) ? fVal.p12sum : autoP12;
+                const inputValue = isQMode ? fVal.qScore : fVal.examScore;
+                const inputMax = isQMode ? s.qCount : s.fExam;
+                const inputField = isQMode ? 'qScore' : 'examScore';
+                html += `<tr><td>${s.name}</td>
+                    <td><input type="number" id="p12sum-${i}" value="${currentP12||''}" onchange="handleInput(this, ${s.pMax*2}, '${s.id}', 'p12sum', 'final')"> / ${s.pMax*2}</td>
+                    <td><input type="number" id="fexam-${i}" value="${inputValue||''}" onchange="handleInput(this, ${inputMax}, '${s.id}', '${inputField}', 'final')"> / ${inputMax}</td>
+                    <td id="calc-score-${i}">0</td><td id="ftotal-${i}">0</td><td id="fgrade-${i}">-</td><td id="fnote-${i}">-</td></tr>`;
+            });
+        } else if (type === 'top_students') {
+            title.innerText = "الأوائل على مستوى البلاد 🇱🇾";
+            wrapper.style.display = "none";
+            visualStats.style.display = "none";
+            celeb.style.display = "block";
+            calculateTopRank();
+            return;
+        }
+        wrapper.innerHTML = html + `</tbody></table>`;
+        calculate();
+    }
+
+    function calculate() {
+        const type = document.getElementById('period-select').value;
+        if (type === 'top_students') return;
+        const summary = document.getElementById('summary-wrapper');
+        const statsWrapper = document.getElementById('stats-wrapper');
+        const predictWrapper = document.getElementById('prediction-wrapper');
+        const progressBar = document.getElementById('main-progress');
+        const currentSubjects = (type === 'questions') ? questionSubjects : subjects;
+        
+        let grandTotal = 0, maxPossible = 0, failCount = 0;
+        let subjectStats = [];
+        let combinedExamScore = 0, combinedExamMax = 0, combinedTotalScore = 0, combinedTotalMax = 0, combinedIndices = [];
+
+        currentSubjects.forEach((s, i) => {
+            let total = 0, sMax = 0, score = 0;
+            if (type === 'p1' || type === 'p2') {
+                const v = (type === 'p1' ? masterData.p1[s.id] : masterData.p2[s.id]) || {work:0, exam:0};
+                total = v.work + v.exam; sMax = s.pMax;
+                document.getElementById(`total-${i}`).innerText = total;
+                document.getElementById(`percent-${i}`).innerText = ((total/sMax)*100).toFixed(1) + "%";
+                const note = document.getElementById(`note-${i}`);
+                if (total < sMax*0.5) { note.innerText = "يحتاج لعناية"; note.parentElement.classList.add('low-grade'); failCount++; }
+                else { note.innerText = "ناجح"; note.parentElement.classList.remove('low-grade'); }
+            } else if (type === 'p12') {
+                const v1 = masterData.p1[s.id] || {work:0, exam:0}, v2 = masterData.p2[s.id] || {work:0, exam:0};
+                total = v1.work + v1.exam + v2.work + v2.exam; sMax = (s.pMax*2);
+                document.getElementById(`total12-${i}`).innerText = total;
+                document.getElementById(`grade12-${i}`).innerText = getGrade((total/sMax)*100);
+                if (total < sMax*0.5) { document.getElementById(`total12-${i}`).parentElement.classList.add('low-grade'); failCount++; }
+                else { document.getElementById(`total12-${i}`).parentElement.classList.remove('low-grade'); }
+            } else if (type === 'final' || type === 'questions') {
+                const fVal = masterData.final[s.id] || {examScore:0, p12sum: 0, qScore: 0};
+                const v1 = masterData.p1[s.id] || {work:0, exam:0}, v2 = masterData.p2[s.id] || {work:0, exam:0};
+                const autoP12 = (v1.work + v1.exam + v2.work + v2.exam);
+                const p12 = (fVal.p12sum !== undefined && fVal.p12sum !== null && fVal.p12sum !== 0) ? fVal.p12sum : autoP12;
+                score = fVal.examScore;
+                total = p12 + score;
+                sMax = (s.pMax * 2) + s.fExam;
+                document.getElementById(`calc-score-${i}`).innerText = score.toFixed(1);
+                document.getElementById(`ftotal-${i}`).innerText = total.toFixed(1);
+                document.getElementById(`fgrade-${i}`).innerText = getGrade((total/sMax)*100);
+                
+                if (type === 'questions' && s.isCombined) {
+                    combinedExamScore += score; combinedExamMax += s.fExam; combinedTotalScore += total; combinedTotalMax += sMax; combinedIndices.push(i);
+                } else {
+                    const cond1 = score >= (s.fExam * 0.391) || (score / s.fExam > 0.39);
+                    const cond2 = total >= (sMax * 0.5);
+                    const note = document.getElementById(`fnote-${i}`);
+                    if (!cond1 || !cond2) { note.innerText = "راسب"; note.parentElement.classList.add('low-grade'); failCount++; }
+                    else { note.innerText = "ناجح"; note.parentElement.classList.remove('low-grade'); }
+                }
+            }
+            grandTotal += total; maxPossible += sMax;
+            subjectStats.push({name: s.name, percent: (total/sMax)*100});
+        });
+
+        if ((type === 'final' || type === 'questions') && combinedIndices.length > 0) {
+            const combinedCond1 = combinedExamScore >= (combinedExamMax * 0.391) || (combinedExamScore / combinedExamMax > 0.39);
+            const combinedCond2 = combinedTotalScore >= (combinedTotalMax * 0.5);
+            combinedIndices.forEach(idx => {
+                const note = document.getElementById(`fnote-${idx}`);
+                if (!combinedCond1 || !combinedCond2) { note.innerText = "راسب (مشترك)"; note.parentElement.classList.add('low-grade'); }
+                else { note.innerText = "ناجح (مشترك)"; note.parentElement.classList.remove('low-grade'); }
+            });
+            if (!combinedCond1 || !combinedCond2) failCount++;
+        }
+
+        const finalPercent = (grandTotal / maxPossible) * 100;
+        window.lastTotal = grandTotal.toFixed(1);
+        const gradeClass = getGradeClass(finalPercent);
+        progressBar.style.width = finalPercent + "%";
+
+        summary.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span><strong>المجموع الكلي:</strong> ${grandTotal.toFixed(1)} / ${maxPossible}</span>
+                <span><strong>النسبة:</strong> ${finalPercent.toFixed(2)}%</span>
+                <span><strong>التقدير العام:</strong> <span class="${gradeClass}">${getGrade(finalPercent)}</span></span>
+                <span>${failCount > 0 ? `<span class="needs-care">عدد المواد المتعثرة: ${failCount}</span>` : '<span style="color:var(--success-color)">ناجح بتفوق ✅</span>'}</span>
+            </div>`;
+
+        const bestSub = subjectStats.reduce((prev, current) => (prev.percent > current.percent) ? prev : current);
+        const weakSub = subjectStats.reduce((prev, current) => (prev.percent < current.percent) ? prev : current);
+        let advice = (finalPercent >= 85) ? "أداء ممتاز! استمر في هذا المستوى الرائع." : (finalPercent >= 65) ? "أداء جيد، يمكنك التحسين بالتركيز أكثر." : "تحتاج لخطة دراسية مكثفة لضمان النجاح.";
+
+        statsWrapper.innerHTML = `
+            <div class="stat-card"><strong>نقطة القوة:</strong> ${bestSub.name} (${bestSub.percent.toFixed(1)}%)</div>
+            <div class="stat-card"><strong>تحتاج لتطوير:</strong> ${weakSub.name} (${weakSub.percent.toFixed(1)}%)</div>
+            <div class="stat-card" style="grid-column: span 2;"><strong>نصيحة المدرسة:</strong> ${advice}</div>
+        `;
+
+        if (type === 'p1' || type === 'p2' || type === 'p12') {
+            predictWrapper.style.display = "block";
+            predictWrapper.innerHTML = `<h4>توقع النجاح والتقدير</h4><p>للحصول على تقدير <strong>ممتاز</strong> في النتيجة النهائية، يُنصح بالحصول على نسبة لا تقل عن 85% في الامتحان النهائي القادم.</p>`;
+        } else { predictWrapper.style.display = "none"; }
+        updateQRCode();
+    }
+
+    function calculateTopRank() {
+        const celeb = document.getElementById('celebration-wrapper');
+        let total = 0;
+        questionSubjects.forEach(s => {
+            const v1 = masterData.p1[s.id] || {work:0, exam:0};
+            const v2 = masterData.p2[s.id] || {work:0, exam:0};
+            const autoP12 = (v1.work + v1.exam + v2.work + v2.exam);
+            const fVal = masterData.final[s.id] || {examScore:0, p12sum: 0};
+            const p12 = (fVal.p12sum !== undefined && fVal.p12sum !== null && fVal.p12sum !== 0) ? fVal.p12sum : autoP12;
+            total += (p12 + fVal.examScore);
+        });
+        total = Math.round(total);
+        const maxScore = 1120;
+        const diff = maxScore - total;
+        const ranks = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
+        const rankText = (diff <= 9) ? ranks[diff] : "خارج قائمة العشرة الأوائل";
+
+        celeb.innerHTML = `
+            <div style="font-size:24px;">🎉 🎊 🎈 🎊 🎉</div>
+            <div class="congrats-text">تهنئة خاصة من مدرسة الساحل للتعليم الخاص</div>
+            <p>نبارك للطالب المتميز: <strong>${masterData.studentName || "......"}</strong></p>
+            <div class="rank-badge">بمجموع ${total} من ${maxScore}</div>
+            <div class="rank-badge">ترتيبك هو: ${rankText}</div>
+            <div class="teacher-note">"أهنئك على هذا الإنجاز الرائع والمتميز. لقد كنت مثالاً للاجتهاد والمثابرة."<br><br><strong>مدرسة الساحل للتعليم الخاص</strong></div>`;
+    }
+
+    function initPage() {
+        const saved = localStorage.getItem('student_master_data');
+        if (saved) {
+            masterData = JSON.parse(saved);
+            const allIds = [...new Set([...subjects.map(s=>s.id), ...questionSubjects.map(s=>s.id)])];
+            allIds.forEach(id => {
+                if (!masterData.p1[id]) masterData.p1[id] = {work:0, exam:0};
+                if (!masterData.p2[id]) masterData.p2[id] = {work:0, exam:0};
+                if (!masterData.final[id]) masterData.final[id] = {examScore:0, p12sum:0, qScore:0};
+            });
+            document.getElementById('student-name').value = masterData.studentName || "";
+            document.getElementById('period-select').value = masterData.periodType || "p1";
+            document.getElementById('template-select').value = masterData.template || "template-modern";
+            applyTemplate();
+            applyDarkMode();
+            updateStudentName();
+        } else {
+            const allIds = [...new Set([...subjects.map(s=>s.id), ...questionSubjects.map(s=>s.id)])];
+            allIds.forEach(id => {
+                masterData.p1[id] = {work:0, exam:0};
+                masterData.p2[id] = {work:0, exam:0};
+                masterData.final[id] = {examScore:0, p12sum:0, qScore:0};
+            });
+        }
+        renderTable();
+    }
+
+    function clearAllData() {
+        if (confirm("هل أنت متأكد من مسح كافة البيانات؟")) {
+            localStorage.removeItem('student_master_data');
+            location.reload();
+        }
+    }
+    window.onload = function() {
+        initPage();
+        setTimeout(updateQRCode, 1000);
+    };
+</script>
+</body>
+</html>
