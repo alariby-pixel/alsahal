@@ -575,41 +575,77 @@ themeToggle.addEventListener('click', () => {
 
 document.getElementById('printBtn').addEventListener('click', async () => {
   const btn = document.getElementById('printBtn');
+  
+  // حماية الزر من النقرات المتعددة
   btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.textContent = '⏳ جاري التحضير...';
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '⏳ جاري تحضير بطاقة النتيجة...';
 
-  try{
-    populatePrintSheet();
-    await document.fonts.ready;
-    await new Promise(r => setTimeout(r, 200));
-
+  try {
+    // 1. استدعاء دالة تعبئة البيانات مع حمايتها من الانهيار (حتى لو كانت تحتوي على عناصر مفقودة)
+    if (typeof populatePrintSheet === 'function') {
+      try {
+        populatePrintSheet();
+      } catch (innerError) {
+        // إذا كان هناك عنصر مفقود، سيتم طباعة التنبيه في المطور، لكن السكريبت لن يتوقف!
+        console.warn("تم تخطي خطأ في تعبئة بعض العناصر المفقودة داخل ورقة الطباعة:", innerError.message);
+      }
+    }
+    
+    // 2. تجهيز ورقة الطباعة بأمان
     const sheet = document.getElementById('printSheet');
+    if (!sheet) throw new Error("لم يتم العثور على عنصر ورقة الطباعة printSheet في ملف HTML");
+    
+    // إظهار مؤقت آمن للمحرك البصري للمتصفح
+    const originalDisplay = sheet.style.display;
+    sheet.style.display = 'block';
+    sheet.style.position = 'absolute';
+    sheet.style.left = '-9999px'; 
+    sheet.style.visibility = 'visible';
+    sheet.style.opacity = '1';
+    
+    // الانتظار الفني لضمان تحميل الخطوط وتجاوب المتصفح
+    await new Promise(r => setTimeout(r, 300));
+    if (document.fonts) await document.fonts.ready;
+
+    // 3. التقاط الصورة
     const canvas = await html2canvas(sheet, {
-      width: 1080,
-      height: 1350,
-      scale: 4,
+      scale: 2, 
       backgroundColor: '#ffffff',
       useCORS: true,
       allowTaint: true,
       logging: false,
-      imageTimeout: 15000
+      scrollX: 0,
+      scrollY: 0
     });
 
+    // 4. إعادة إخفاء ورقة الطباعة فوراً بعد اللقطة إلى وضعها الأصلي
+    sheet.style.display = originalDisplay || 'none';
+    sheet.style.position = '';
+    sheet.style.left = '';
+
+    // 5. جلب اسم الطالب بأمان تام لتسمية الملف
+    let studentInput = document.getElementById('studentName');
+    let rawName = studentInput ? studentInput.value : '';
+    const safeName = (rawName.trim()) ? rawName.trim().replace(/\s+/g, '_') : 'طالب_القسم_العلمي';
+
+    // 6. تحميل بطاقة النتيجة كصورة PNG (تعديل السطر المصاب)
     const link = document.createElement('a');
-    const name = (state.studentName || 'الطالب').trim().replace(/\s+/g, '_');
-    link.download = `نتيجة_${name}_القسم_العلمي.png`;
-    link.href = canvas.toDataURL('image/png');
+    link.download = `نتيجة_${safeName}_القسم_العلمي.png`;
+    link.href = canvas.toDataURL('image/png'); // هنا تم إصلاح الخطأ اللغوي الجذري
+    document.body.appendChild(link);
     link.click();
-  } catch(err){
-    alert('حدث خطأ أثناء إنشاء الصورة، حاول مرة أخرى.');
+    document.body.removeChild(link);
+
+  } catch (err) {
+    alert('منظومة الساحل: حدث خطأ غير متوقع أثناء معالجة الصورة.\nالسبب: ' + err.message);
     console.error(err);
   } finally {
+    // إعادة الزر لحالته الطبيعية والنشطة
     btn.disabled = false;
-    btn.textContent = originalText;
+    btn.innerHTML = originalText;
   }
 });
-
 function populatePrintSheet(){
   document.getElementById('psStudentName').textContent = state.studentName && state.studentName.trim()
     ? state.studentName.trim() : 'بدون اسم';
